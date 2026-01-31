@@ -9,4 +9,4 @@
 |2026年1月|Java Silver  (IZO-815-JPN) |87% 合格|
 
 - 現在：基本情報技術者 科目B 学習中
-- 詳細な学習記録(2026/10~)は [study_log](./study_log.md) を参照
+- 詳細な学習記録(2025/10~)は [study_log](./study_log.md) を参照
