@@ -28,7 +28,7 @@ Sent from AppSheet
 Sent from AppSheet  
 
 ---
-#### Heroku database psql バージョンサポート終了に伴う自動アップグレードの警告に対する対応作業
+#### ⚠️ Heroku database psql バージョンサポート終了に伴う自動アップグレードの警告に対する対応作業
 1/28、下記メールが届く
 ```
 Your database (PUCE on ***) is on the deprecated Postgres version 14 that reached end-of-life on 2025-Nov-28. To ensure your database has the best performance, security, and features, we require upgrading your database Postgres version to a supported version. We recommend upgrading to the latest Postgres version as soon as possible. If you don't upgrade your Postgres version by 2026-Feb-03, we'll upgrade your database version to Postgres 17 anytime after this date. See Upgrading the Version of a Heroku Postgres Database for more details, or open a support ticket if you have any questions.
@@ -53,13 +53,13 @@ Your database (PUCE on ***) is on the deprecated Postgres version 14 that reache
 ##### 3.アプリを確認するとデータが消えている。
    - 原因：heroku 側 でデータベース情報が更新されていることが判明。
    - Eclipse アプリのデータベース情報を最新のものに更新
-   ```
-   jdbc:postgresql://<host>:<port>/<dbname>?user=<username>&password=<password>
-   ```
+      ```
+      jdbc:postgresql://<host>:<port>/<dbname>?user=<username>&password=<password>
+      ```
    - ローカル環境のアプリを.warファイルにエクスポートし、デプロイ  
-    ```  
-    heroku war:deploy /.../.../.../**.war -a アプリ名 --webapp-runner 8.5.50.0  
-    ```  
+      ```  
+      heroku war:deploy /.../.../.../**.war -a アプリ名 --webapp-runner 8.5.50.0  
+      ```  
 ##### 4.アプリ正常稼働を確認。作業完了。
      
 ---
