@@ -42,16 +42,21 @@ Your database (PUCE on ***) is on the deprecated Postgres version 14 that reache
      ```
       heroku pg:backups:capture -a アプリ名
      ```
-   - 手動アップグレード（15分ほどかかり、完了通知が heroku からメールで届いた）
+   - 手動アップグレード
      ```
       heroku pg:upgrade DATABASE_URL --version 17 -a アプリ名
      ```
-   - アップグレード完了を確認。
+   - アップグレード完了を確認。（15分ほどかかり、完了通知が heroku からメールで届いた）
      ```
      heroku pg:info -a アプリ名
      ```
 ##### 3.アプリを確認するとデータが消えている。
-   - 原因：heroku 側 でデータベース情報が更新されていることが判明。Eclipse のデータベース情報を最新のものに更新後、warデプロイ  
+   - 原因：heroku 側 でデータベース情報が更新されていることが判明。
+   - Eclipse アプリのデータベース情報を最新のものに更新
+   ```
+   jdbc:postgresql://<host>:<port>/<dbname>?user=<username>&password=<password>
+   ```
+   - ローカル環境のアプリを.warファイルにエクスポートし、デプロイ  
     ```  
     heroku war:deploy /.../.../.../**.war -a アプリ名 --webapp-runner 8.5.50.0  
     ```  
