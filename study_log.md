@@ -51,7 +51,7 @@ Your database (PUCE on ***) is on the deprecated Postgres version 14 that reache
      heroku pg:info -a アプリ名
      ```
 ##### 3.アプリを確認するとデータが消えている。
-   - 原因1：heroku 側 でデータベース情報が更新されていることが判明。Eclipse のデータベース情報を最新のものに更新後、warデプロイ  
+   - 原因：heroku 側 でデータベース情報が更新されていることが判明。Eclipse のデータベース情報を最新のものに更新後、warデプロイ  
     ```  
     heroku war:deploy /.../.../.../**.war -a アプリ名 --webapp-runner 8.5.50.0  
     ```  
