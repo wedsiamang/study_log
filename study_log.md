@@ -12,6 +12,21 @@
    Sent from AppSheet  
 
 ---
+#### AppSheet 1日の学習成果通知メールテンプレート
+- テーブルはテキストごとに分けた構成
+- 1問ごとの正解、不正解、開始、終了時間を 各テーブルの detail-View の `Quick Edit機能` で都度記録することにより、Chapter毎の正答率や解答時間合計などをバーチャルカラムで算出している
+- 「今日はここまで」カラムを TRUE にすることを bot 起動のトリガーとし、そのテーブル（テキスト）の当日の解いた問題について自動メール通知
+```
+<<today()>>
+📗　基本情報科目Bテキスト：大原練習問題
+✏️　解いた問題数：<<COUNT(SELECT(大原練習問題集[id],AND([date]=today(),ISNOTBLANK([1st_answer]))))>>問
+🔢　<<SELECT(大原練習問題集[chapter],[date]=today(),true)>>  
+🎨　カテゴリー：<<SELECT(大原練習問題集[category],[date]=today(),true)>>
+🕰️　解答時間合計：<<SUM(SELECT(大原練習問題集[1st_chapter_time],[date]=today()))>>
+⭕️　正答率：<<COUNT(SELECT(大原練習問題集[id],AND([date]=today(),[1st_answer]=true)))/decimal(COUNT(SELECT(大原練習問題集[id],AND([date]=today(),ISNOTBLANK([1st_answer])))))*100>>%
+⚠️　最長解答問題：【<<SELECT(大原練習問題集[category],AND([1st_chapter_time]=MAX(SELECT(大原練習問題集[1st_chapter_time],[date]=today())),[date]=today()))>>】No.<<SELECT(大原練習問題集[no.],AND([1st_chapter_time]=MAX(SELECT(大原練習問題集[1st_chapter_time],[date]=today())),[date]=today()))>>　／　<<MAX(SELECT(大原練習問題集[1st_chapter_time],[date]=today()))>>
+```
+---
 ### 📅 2026/01/30  
    📗 　テキスト：大原練習問題  
    ✏️ 　解いた問題数：27問  
