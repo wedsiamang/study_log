@@ -1,5 +1,18 @@
 #### study_log
 ---
+### 📅 2026/02/02
+📗　基本情報科目Bテキスト：大原テキスト
+✏️　解いた問題数：8問
+🔢　第4部データ構造とアルゴリズム② , 第5部代表的なアルゴリズム②
+🎨　カテゴリー：リスト , 木 , ハッシュ法
+🕰️　解答時間合計：01:58:33
+⭕️　正答率：50.00%
+⚠️　最長解答問題：【第4部データ構造とアルゴリズム②】No.演習4-2　／　00:27:37
+❌　間違えた問題：リスト , 木 , ハッシュ法
+　　(No.演習4-1 , 演習4-2 , 範例4-2 , 演習5-1)
+Sent from AppSheet
+
+---
 ### 📅 2026/02/01  
    📗　基本情報科目Bテキスト：大原練習問題  
    ✏️　解いた問題数：16問  
@@ -45,9 +58,11 @@
 ✏️　解いた問題数：<<COUNT(SELECT(大原練習問題集[id],AND([date]=today(),ISNOTBLANK([1st_answer]))))>>問
 🔢　<<SELECT(大原練習問題集[chapter],[date]=today(),true)>>  
 🎨　カテゴリー：<<SELECT(大原練習問題集[category],[date]=today(),true)>>
-🕰️　解答時間合計：<<SUM(SELECT(大原練習問題集[1st_chapter_time],[date]=today()))>>
+🕰️　解答時間合計：<<SUM(SELECT(大原練習問題集[1st_lap_time],[date]=today()))>>
 ⭕️　正答率：<<COUNT(SELECT(大原練習問題集[id],AND([date]=today(),[1st_answer]=true)))/decimal(COUNT(SELECT(大原練習問題集[id],AND([date]=today(),ISNOTBLANK([1st_answer])))))*100>>%
-⚠️　最長解答問題：【<<SELECT(大原練習問題集[category],AND([1st_chapter_time]=MAX(SELECT(大原練習問題集[1st_chapter_time],[date]=today())),[date]=today()))>>】No.<<SELECT(大原練習問題集[no.],AND([1st_chapter_time]=MAX(SELECT(大原練習問題集[1st_chapter_time],[date]=today())),[date]=today()))>>　／　<<MAX(SELECT(大原練習問題集[1st_chapter_time],[date]=today()))>>
+⚠️　最長解答問題：【<<SELECT(大原練習問題集[category],AND([1st_chapter_time]=MAX(SELECT(大原練習問題集[1st_chapter_time],[date]=today())),[date]=today()))>>】No.<<SELECT(大原練習問題集[no.],AND([1st_lap_time]=MAX(SELECT(大原練習問題集[1st_lap_time],[date]=today())),[date]=today()))>>　／　<<MAX(SELECT(大原練習問題集[1st_lap_time],[date]=today()))>>
+❌　間違えた問題：<<SELECT(大原練習問題集[category],AND([1st_answer]=false,[date]=today()),true)>>
+　　(No.<<SELECT(大原練習問題集[no.],AND([1st_answer]=false,[date]=today()))>>)
 ```
 ---
 ### 📅 2026/01/30  
