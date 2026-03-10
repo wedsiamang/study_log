@@ -1,5 +1,106 @@
 #### study_log
 ----
+### 📅 2026/03/10  
+📗　基本情報テキスト：パーフェクトラーニング技術評論社08  
+✏️　解いた問題数：20問  
+🔢　対策問題②_B  
+🎨　カテゴリー：アルゴリズム , セキュリティ  
+🕰️　解答時間合計：01:14:47  
+⭕️　正答率：90.00%  
+⚠️　最長解答問題：【アルゴリズム】No.6　／　00:15:59  
+❌　間違えた問題：【アルゴリズム】No.2 , 6  
+Sent from AppSheet  
+
+---
+### 📅 2026/03/09,10  
+paiza Bランク練習問題  
+「長テーブルのうなぎ屋 (力試し編) Java編」  
+スコア：58  
+解答時間：６時間  
+https://paiza.jp/works/mondai/b_rank_skillcheck_sample/long-table_00
+```
+import java.util.*;
+
+
+public class Main {
+    public static void main(String[] args) throws Exception{
+/*
+6 3. n = 座席数　m = グループ数.   6席あり、3つのグループがきた
+3 2  a_i(グループの人数) b_i(着席開始座席番号)　1グループ目：３人、2番の席から着席
+1 6. a_i                 b_i　　　　　　　　　　2グループ目：１人、6番の席に着席　
+2 5. a_i                 b_i　　　　　　　　　　3グループ目：２人、5番の席から着席
+出力　4 2グループ目が座れないため
+*/
+        
+        
+         Scanner sc = new Scanner(System.in);
+        int N = sc.nextInt();//6 ( 0,1,2,3,4,5)
+        int M = sc.nextInt();//3 (座席1,2,3)(座席5)(座席4,5)
+        
+        int zaseki[]=new int[N];//1,2,3,4,5,6
+        int human[]= new int[M];//3,1,2
+        int zasekiNumber[]= new int[M];//2,6,5
+        int count = 0;
+        int seki = 0;
+        int chakuseki = 0;
+        int jcount = 0;
+        boolean empty=true;
+        
+        for(int o=0;o<N;o++){
+            zaseki[o]=o+1;
+        }
+        for (int i = 0; i < M; i++) {
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+            human[i]=a;
+            zasekiNumber[i]=b;
+        }   
+       
+            for(int k = 0; k < M;k++){
+                 for(int j = 0; j < N;j++){
+                if(zasekiNumber[k]==zaseki[j]){
+                    if(zaseki[j]==0){
+                        break;
+                    }else{
+                            seki=zasekiNumber[k]-1;// 2,6,5
+                            count=human[k];// 3,1,2
+
+                            while(count>0 && empty==true && seki<N){
+                                
+                                if(zaseki[seki]==0){
+                                    empty=false;
+                                }
+                                seki++;
+                                count--;
+                            }    
+                            if(empty==true){
+                                
+                                seki=zasekiNumber[k]-1;
+                                count=human[k];
+                                
+                                while(count>0 && seki<N){
+                                        zaseki[seki]=0;
+                                        seki++;
+                                        count--;
+                                }
+                            }else{
+                                seki=0;
+                                count=0;
+                            }
+                    }        
+                }
+               empty=true; 
+            }
+        }
+        for(int z=0;z<N;z++){
+            if(zaseki[z]==0)
+            chakuseki++;
+        }
+        System.out.println(chakuseki);
+    }
+}
+```
+---
 ### 📅 2026/03/05  
 📗　基本情報テキスト：パーフェクトラーニング技術評論社08  
 ✏️　解いた問題数：19問  
