@@ -1,4 +1,4 @@
-### Priority Queue Scheduler — Execution Trace
+### Trace
 <details><summary>優先度付きキューの手動トレース（21ステップ）</summary>
 
 優先度付きキュー（値が小さいほど高優先度）のスケジューラを、enqueue/dequeue で1ステップずつ追跡。
