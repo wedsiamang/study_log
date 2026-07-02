@@ -1,5 +1,5 @@
 ### Trace
-<details><summary>優先度付きキュー（21ステップ）</summary>
+<details><summary>優先度付きキュー</summary>
 
 優先度付きキュー（値が小さいほど高優先度）のスケジューラを、enqueue/dequeue で1ステップずつ追跡
 
@@ -29,7 +29,7 @@
 
 </details>
 
-<details><summary>マージ(37ステップ)</summary>
+<details><summary>マージ</summary>
 
 関数 merge を merge({2，3}，{1，4})として呼び出し昇順にして配列に格納する
 
@@ -75,7 +75,7 @@
 
 </details>
 
-<details><summary>範囲内の4の倍数を数える ― 全走査と倍数ジャンプの比較(66ステップ)</summary>
+<details><summary>範囲内の4の倍数を数える ― 全走査と倍数ジャンプの比較</summary>
 
 | # | トレース | 判定 | n | m | count | i | tempN | j |
 |---|---|---|---|---|---|---|---|---|
@@ -146,4 +146,43 @@
 | 65 | endfor |   |   |   |   |   |   |   |
 | 66 | return count |   |   |   | 3 |   |   |   |
   
+</details>
+
+<details><summary>最大公約数</summary>
+
+  | # | トレース | 判定 | num1 | num2 | x | y |
+|---|---|---|---|---|---|---|
+| 1 | ○int gcd(int num1,int num2) |   | 8 | 26 |   |   |
+| 2 | int x←num1 |   |   |   | 8 |   |
+| 3 | int y←num2 |   |   |   |   | 26 |
+| 4 | while(x!=y) | true |   |   |   |   |
+| 5 | if(x>y) | false |   |   |   |   |
+| 6 | else |   |   |   |   |   |
+| 7 | y←y-x |   |   |   |   | 18 |
+| 8 | endif |   |   |   |   |   |
+| 9 | while(x!=y) | true |   |   |   |   |
+| 10 | if(x>y) | false |   |   |   |   |
+| 11 | else |   |   |   |   |   |
+| 12 | y←y-x |   |   |   |   | 10 |
+| 13 | endif |   |   |   |   |   |
+| 14 | while(x!=y) | true |   |   |   |   |
+| 15 | if(x>y) | false |   |   |   |   |
+| 16 | y←y-x |   |   |   |   | 2 |
+| 17 | endif |   |   |   |   |   |
+| 18 | while(x!=y) | true |   |   |   |   |
+| 19 | if(x>y) | true |   |   |   |   |
+| 20 | x←x-y |   |   |   | 6 |   |
+| 21 | endif |   |   |   |   |   |
+| 22 | while(x!=y) | true |   |   |   |   |
+| 23 | if(x>y) | true |   |   |   |   |
+| 24 | x←x-y |   |   |   | 4 |   |
+| 25 | endif |   |   |   |   |   |
+| 26 | while(x!=y) | true |   |   |   |   |
+| 27 | if(x>y) | true |   |   |   |   |
+| 28 | x←x-y |   |   |   | 2 |   |
+| 29 | endif |   |   |   |   |   |
+| 30 | while(x!=y) | false |   |   |   |   |
+| 31 | endwhile |   |   |   |   |   |
+| 32 | return x |   |   |   | 2 |   |
+
 </details>
