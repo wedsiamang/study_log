@@ -1,0 +1,18 @@
+{
+  "name": "Study Progress Tracker",
+  "description": "Automatically tracks and visualizes algorithm tracing study progress",
+  "url": "https://github.com/wedsiamang/study_log",
+  "hook_attributes": {
+    "url": "https://your-app-url.com/webhook"
+  },
+  "public": true,
+  "default_permissions": {
+    "contents": "read",
+    "pull_requests": "write",
+    "metadata": "read"
+  },
+  "default_events": [
+    "push",
+    "pull_request"
+  ]
+}
