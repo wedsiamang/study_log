@@ -1,0 +1,33 @@
+name: Update Progress Dashboard
+
+on:
+  push:
+    paths:
+      - 'trace.md'
+    branches:
+      - main
+
+jobs:
+  update-progress:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Run progress update script
+        run: node scripts/update-progress.js
+
+      - name: Commit and push progress update
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add progress.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🔄 Update progress dashboard" && git push)
