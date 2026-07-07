@@ -223,3 +223,27 @@
 | 30 | return adjMatrix |   |   |   |   |   |   | {{0,0,1,1,0},{0,0,0,1,0},{1,0,0,1,0},{1,1,1,0,1},{0,0,0,1,0}} |
   
 </details>
+
+<details><summary>2進数文字列から10進整数への変換</summary>
+
+| # | トレース | 判定 | binary | i | length | result |
+|---|---|---|---|---|---|---|
+| 1 | ○int convDecimal(String binary) |   | "10010" |   |   |   |
+| 2 | int i,length,result←0 |   |   |   |   | 0 |
+| 3 | length←binaryの文字数 |   |   |   | 5 |   |
+| 4 | for(iを1からlengthまで++) | true |   | 1 |   |   |
+| 5 | result←result*2+int(binaryのi文字目の文字) |   |   |   |   | 1 |
+| 6 | for(iを1からlengthまで++) | true |   | 2 |   |   |
+| 7 | result←result*2+int(binaryのi文字目の文字) |   |   |   |   | 2 |
+| 8 | for(iを1からlengthまで++) | true |   | 3 |   |   |
+| 9 | result←result*2+int(binaryのi文字目の文字) |   |   |   |   | 4 |
+| 10 | for(iを1からlengthまで++) | true |   | 4 |   |   |
+| 11 | result←result*2+int(binaryのi文字目の文字) |   |   |   |   | 9 |
+| 12 | for(iを1からlengthまで++) | true |   | 5 |   |   |
+| 13 | result←result*2+int(binaryのi文字目の文字) |   |   |   |   | 18 |
+| 14 | for(iを1からlengthまで++) | false |   | 6 |   |   |
+| 15 | endfor |   |   |   |   |   |
+| 16 | return result |   |   |   |   | 18 |
+
+  
+</details>
