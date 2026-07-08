@@ -246,3 +246,48 @@
 | 16 | return result |   |   |   |   | 18 |
 
 </details>
+
+<details><summary>素数列挙</summary>
+
+| # | トレース | 判定 | maxNum | pnList | i | j | divideFlag | iの正の平方根の整数部分 |
+|---|---|---|---|---|---|---|---|---|
+| 1 | ○int[]findPrimeNumbers(int maxNum) |   | 5 |   |   |   |   |   |
+| 2 | int[]pnList←{} |   |   |   |   |   |   |   |
+| 3 | int i,j |   |   |   |   |   |   |   |
+| 4 | boolean divideFlag |   |   |   |   |   |   |   |
+| 5 | for(iを2~maxNum++) | true |   |   | 2 |   |   |   |
+| 6 | divideFlag←true |   |   |   |   |   | true |   |
+| 7 | α:for(jを2~iの正の平方根の整数部分++) | false |   |   |   |   |   | 1 |
+| 8 | endfor |   |   |   |   |   |   |   |
+| 9 | if(divideFlag==true) | true |   |   |   |   |   |   |
+| 10 | pnListの末尾にiの値を追加する |   |   | 2 |   |   |   |   |
+| 11 | endif |   |   |   |   |   |   |   |
+| 12 | for(iを2~maxNum++) | true |   |   | 3 |   |   |   |
+| 13 | divideFlag←true |   |   |   |   |   | true |   |
+| 14 | α:for(jを2~iの正の平方根の整数部分++) | false |   |   |   |   |   | 1 |
+| 15 | endfor |   |   |   |   |   |   |   |
+| 16 | if(divideFlag==true) | true |   |   |   |   |   |   |
+| 17 | pnListの末尾にiの値を追加する |   |   | 2,3 |   |   |   |   |
+| 18 | endif |   |   |   |   |   |   |   |
+| 19 | for(iを2~maxNum++) |   |   |   | 4 |   |   |   |
+| 20 | divideFlag←true |   |   |   |   |   | true |   |
+| 21 | α:for(jを2~iの正の平方根の整数部分++) | true |   |   |   | 2 |   | 2 |
+| 22 | if(i mod j==0) | true |   |   |   |   |   |   |
+| 23 | divideFlag←false |   |   |   |   |   | false |   |
+| 24 | α:break |   |   |   |   |   |   |   |
+| 25 | endfor |   |   |   |   |   |   |   |
+| 26 | if(divideFlag==true) | false |   |   |   |   |   |   |
+| 27 | endif |   |   |   |   |   |   |   |
+| 28 | for(iを2~maxNum++) |   |   |   | 5 |   |   |   |
+| 29 | divideFlag←true |   |   |   |   |   | true |   |
+| 30 | α:for(jを2~iの正の平方根の整数部分++) | true |   |   |   | 2 |   | 2 |
+| 31 | if(i mod j==0) | false |   |   |   |   |   |   |
+| 32 | endif |   |   |   |   |   |   |   |
+| 33 | if(divideFlag==true) | true |   |   |   |   |   |   |
+| 34 | pnListの末尾にiの値を追加する |   |   | 2,3,5 |   |   |   |   |
+| 35 | endif |   |   |   |   |   |   |   |
+| 36 | for(iを2~maxNum++) | false |   |   | 6 |   |   |   |
+| 37 | endfor |   |   |   |   |   |   |   |
+| 38 | return pnList |   |   | 2,3,5 |   |   |   |   |
+
+</details>
