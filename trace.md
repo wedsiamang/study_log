@@ -329,3 +329,18 @@
 | 31 | return r |   |   |   | 11010010 |   |   |   |   |
   
 </details>
+
+<details><summary>文字の隣接確率(バイグラム)</summary>
+
+| # | トレース | 判定 | c1 | c2 | s1 | s2 | words.freq(s1+s2) | (words.freq(s1) | words.freqE(s1) | (words.freq(s1)-words.freqE(s1)) | words.freq(s1+s2)/(words.freq(s1)-words.freqE(s1)) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | INT WORDS words←{"importance","inflation","information","innovation"} |   |   |   |   |   |   |   |   |   |   |
+| 2 | int freq(String str)//英単語群中の文字列strの出現回数を返す |   |   |   |   |   |   |   |   |   |   |
+| 3 | int freqE(String str)//英単語群の中で文字列strで終わる英単語の数を返す |   |   |   |   |   |   |   |   |   |   |
+| 4 | ○double prob(String c1,String c2) |   | "n" | "f" |   |   |   |   |   |   |   |
+| 5 | String s1←c1の1文字だけから成る文字列 |   |   |   | "n" |   |   |   |   |   |   |
+| 6 | String s2←c2の1文字だけから成る文字列 |   |   |   |   | "f" |   |   |   |   |   |
+| 7 | if(words.freq(s1+s2)>0) | true |   |   |   |   | 2 |   |   |   |   |
+| 8 | return words.freq(s1+s2)/(words.freq(s1)-words.freqE(s1)) |   |   |   |   |   | 2 | 8 | 3 | 5 | 0.4 |
+  
+</details>
