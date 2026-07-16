@@ -344,3 +344,142 @@
 | 8 | return words.freq(s1+s2)/(words.freq(s1)-words.freqE(s1)) |   |   |   |   |   | 2 | 8 | 3 | 5 | 0.4 |
   
 </details>
+
+<details><summary>理論度数</summary>
+
+| # | トレース | 判定 | data | t | row | col | result | r | c | (dataの行番号rの要素の和) | (dataの列番号cの要素の和) | (dataの行番号rの要素の和)*(dataの列番号cの要素の和)/t |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | ○double[][] f(double[][] data) |   | {{82,6},{58,8}} |   |   |   |   |   |   |   |   |   |
+| 2 | double t←dataの要素の和 |   |   | 154 |   |   |   |   |   |   |   |   |
+| 3 | int row←dataの行数 |   |   |   | 2 |   |   |   |   |   |   |   |
+| 4 | int col←dataの列数 |   |   |   |   | 2 |   |   |   |   |   |   |
+| 5 | double[][] result←{row行col列の未定義の値} |   |   |   |   |   | {{0,0},{0,0}} |   |   |   |   |   |
+| 6 | int r,c |   |   |   |   |   |   |   |   |   |   |   |
+| 7 | for(rを1~row++) | true |   |   |   |   |   | 1 |   |   |   |   |
+| 8 | for(cを1~col++) | true |   |   |   |   |   |   | 1 |   |   |   |
+| 9 | result[r,c]←(dataの行番号rの要素の和)*(dataの列番号cの要素の和)/t |   |   |   |   |   | {{80,0},{0,0}} |   |   | 88 | 140 | 80 |
+| 10 | for(cを1~col++) | true |   |   |   |   |   |   | 2 |   |   |   |
+| 11 | result[r,c]←(dataの行番号rの要素の和)*(dataの列番号cの要素の和)/t |   |   |   |   |   | {{80,8},{0,0}} |   |   | 88 | 14 | 8 |
+| 12 | for(cを1~col++) | false |   |   |   |   |   |   | 3 |   |   |   |
+| 13 | endfor |   |   |   |   |   |   |   |   |   |   |   |
+| 14 | for(rを1~row++) | true |   |   |   |   |   | 2 |   |   |   |   |
+| 15 | for(cを1~col++) | true |   |   |   |   |   |   | 1 |   |   |   |
+| 16 | result[r,c]←(dataの行番号rの要素の和)*(dataの列番号cの要素の和)/t |   |   |   |   |   | {{80,8},{60,0}} |   |   | 66 | 140 | 60 |
+| 17 | for(cを1~col++) | true |   |   |   |   |   |   | 2 |   |   |   |
+| 18 | result[r,c]←(dataの行番号rの要素の和)*(dataの列番号cの要素の和)/t |   |   |   |   |   | {{80,8},{60,6}} |   |   | 66 | 14 | 6 |
+| 19 | for(cを1~col++) | false |   |   |   |   |   |   | 3 |   |   |   |
+| 20 | endfor |   |   |   |   |   |   |   |   |   |   |   |
+| 21 | for(rを1~row++) | false |   |   |   |   |   | 3 |   |   |   |   |
+| 22 | endfor |   |   |   |   |   |   |   |   |   |   |   |
+| 23 | return result |   |   |   |   |   | {{80,8},{60,6}} |   |   |   |   |   |
+
+  
+</details>
+
+<details><summary>二分木の通りがけ順走査（再帰）</summary>
+
+出力はあっているが、再帰の戻り方、階層を間違えている
+
+| # | トレース | 判定 | n | tree[n] | tree[n][1] | tree[n][2] | system.out.println(n) |
+|---|---|---|---|---|---|---|---|
+| 1 | INT [] tree←{{2,3},{4,5},{6,7},{8,9},{10,11},{12,13},{14},{},{},{},{},{},{},{}} |   |   |   |   |   |   |
+| 2 | ○order(int n) |   | 1 |   |   |   |   |
+| 3 | if(tree[n]の要素数==2) | true |   | {2,3} |   |   |   |
+| 4 | order(tree[n][1]) |   |   |   | 2 |   |   |
+| 5 | order(2) |   | 2 |   |   |   |   |
+| 6 | if(tree[n]の要素数==2) | true |   | {4,5} |   |   |   |
+| 7 | order(tree[n][1]) |   |   |   | 4 |   |   |
+| 8 | order(4) |   | 4 |   |   |   |   |
+| 9 | if(tree[n]の要素数==2) | true |   | {8,9} |   |   |   |
+| 10 | order(tree[n][1]) |   |   |   | 8 |   |   |
+| 11 | order(8) |   | 8 |   |   |   |   |
+| 12 | if(tree[n]の要素数==2) | false |   | {} |   |   |   |
+| 13 | elseif(tree[n]の要素数==1) | false |   |   |   |   |   |
+| 14 | else |   |   |   |   |   |   |
+| 15 | system.out.println(n) |   |   |   |   |   | 8 |
+| 16 | endif |   |   |   |   |   |   |
+| 17 | order(4) |   | 4 |   |   |   |   |
+| 18 | system.out.println(n) |   |   |   |   |   | 8,4 |
+| 19 | order(tree[n][2]) |   |   |   |   | 9 |   |
+| 20 | order(9) |   | 9 |   |   |   |   |
+| 21 | if(tree[n]の要素数==2) | false |   | {} |   |   |   |
+| 22 | elseif(tree[n]の要素数==1) | false |   | {} |   |   |   |
+| 23 | else |   |   |   |   |   |   |
+| 24 | system.out.println(n) |   |   |   |   |   | 8,4,9 |
+| 25 | endif |   |   |   |   |   |   |
+| 26 | order(2) |   | 2 |   |   |   |   |
+| 27 | system.out.println(n) |   |   |   |   |   | 8,4,9,2 |
+| 28 | order(tree[n][2]) |   |   |   |   | 5 |   |
+| 29 | order(5) |   | 5 |   |   |   |   |
+| 30 | if(tree[n]の要素数==2) | true |   | {10,11} |   |   |   |
+| 31 | order([n][1]) |   |   |   | 10 |   |   |
+| 32 | order(10) |   | 10 |   |   |   |   |
+| 33 | if(tree[n]の要素数==2) | false |   | {} |   |   |   |
+| 34 | elseif(tree[n]の要素数==1) | false |   | {} |   |   |   |
+| 35 | else |   |   |   |   |   |   |
+| 36 | system.out.println(n) |   |   |   |   |   | 8,4,9,2,10, |
+| 37 | endif |   |   |   |   |   |   |
+| 38 | order(5) |   |   |   |   |   |   |
+| 39 | system.out.println(n) |   |   |   |   |   | 8,4,9,2,10,5, |
+| 40 | order(tree[n][2]) |   |   |   |   | 11 |   |
+| 41 | order(11) |   | 11 |   |   |   |   |
+| 42 | if(tree[n]の要素数==2) | false |   | {} |   |   |   |
+| 43 | elseif(tree[n]の要素数==1) | false |   | {} |   |   |   |
+| 44 | else |   |   |   |   |   |   |
+| 45 | system.out.println(n) |   |   |   |   |   | 8,4,9,2,10,5,11, |
+| 46 | endif |   |   |   |   |   |   |
+| 47 | order(1) |   |   |   |   |   |   |
+| 48 | system.out.println(n) |   |   |   |   |   | 8,4,9,2,10,5,11,1, |
+| 49 | order(tree[n][2]) |   |   |   |   | 3 |   |
+| 50 | order(3) |   | 3 |   |   |   |   |
+| 51 | if(tree[n]の要素数==2) | true |   | {6,7} |   |   |   |
+| 52 | order(tree[n][1]) |   |   |   | 6 |   |   |
+| 53 | order(6) |   |   |   |   |   |   |
+| 54 | if(tree[n]の要素数==2) | true |   | {12,13} |   |   |   |
+| 55 | order(tree[n][1]) |   |   |   | 12 |   |   |
+| 56 | order(12) |   | 12 |   |   |   |   |
+| 57 | if(tree[n]の要素数==2) | false |   | {} |   |   |   |
+| 58 | elseif(tree[n]の要素数==1) | false |   | {} |   |   |   |
+| 59 | else |   |   |   |   |   |   |
+| 60 | system.out.println(n) |   |   |   |   |   | 8,4,9,2,10,5,11,1,12 |
+| 61 | endif |   |   |   |   |   |   |
+| 62 | order(6) |   | 6 |   |   |   |   |
+| 63 | system.out.println(n) |   |   |   |   |   | 8,4,9,2,10,5,11,1,12,6 |
+| 64 | order(tree[n][2]) |   |   |   |   | 13 |   |
+| 65 | order(13) |   | 13 |   |   |   |   |
+| 66 | if(tree[n]の要素数==2) | false |   | {} |   |   |   |
+| 67 | elseif(tree[n]の要素数==1) | false |   | {} |   |   |   |
+| 68 | else |   |   |   |   |   |   |
+| 69 | system.out.println(n) |   |   |   |   |   | 8,4,9,2,10,5,11,1,12,6,13 |
+| 70 | endif |   |   |   |   |   |   |
+| 71 | order(3) |   | 3 |   |   |   |   |
+| 72 | system.out.println(n) |   |   |   |   |   | 8,4,9,2,10,5,11,1,12,6,13,3 |
+| 73 | order(tree[n][2]) |   |   |   |   | 7 |   |
+| 74 | order(7) |   |   |   |   |   |   |
+| 75 | if(tree[n]の要素数==2) | false |   | {14} |   |   |   |
+| 76 | elseif(tree[n]の要素数==1) | true |   | {14} |   |   |   |
+| 77 | order(tree[n][1]) |   |   |   | 14 |   |   |
+| 78 | order(14) |   | 14 |   |   |   |   |
+| 79 | if(tree[n]の要素数==2) | false |   | {} |   |   |   |
+| 80 | elseif(tree[n]の要素数==1) | false |   | {} |   |   |   |
+| 81 | else |   |   |   |   |   |   |
+| 82 | system.out.println(n) |   |   |   |   |   | 8,4,9,2,10,5,11,1,12,6,13,3,14 |
+| 83 | endif |   |   |   |   |   |   |
+| 84 | order(7) |   |   |   |   |   |   |
+| 85 | system.out.println(n) |   |   |   |   |   | 8,4,9,2,10,5,11,1,12,6,13,3,14,7 |
+| 86 | endif |   |   |   |   |   |   |
+| 87 | order(3) |   |   |   |   |   |   |
+| 88 | endif |   |   |   |   |   |   |
+| 89 | order(6) |   |   |   |   |   |   |
+| 90 | endif |   |   |   |   |   |   |
+| 91 | order(1) |   |   |   |   |   |   |
+| 92 | endif |   |   |   |   |   |   |
+| 93 | order(5) |   |   |   |   |   |   |
+| 94 | endif |   |   |   |   |   |   |
+| 95 | order(2) |   |   |   |   |   |   |
+| 96 | endif |   |   |   |   |   |   |
+| 97 | order(4) |   |   |   |   |   |   |
+| 98 | endif |   |   |   |   |   |   |
+
+  
+</details>
