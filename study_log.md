@@ -1,5 +1,9 @@
 #### study_log
 ----
+##### 📅 ~2026/07/27
+- spring-boot slackbotをAIで学習開発
+    - [RoomBooking_slack_bot](https://github.com/wedsiamang/RoomBooking_slack_bot/tree/main)
+        -  Slack WF Builder からのフォーム送信データをspring-bootでh2dbのデータと照合し、ルールに添い判定結果をスレッドに返信する申請系bot
 
 ##### 📅 2026/07/14
 - FE_演習
