@@ -13,16 +13,17 @@
 
 </details>
 
+> [!TIP]
+> **contribution graph**
+> ローカルからGithub未登録メールアドレスの user でコミットすると草は生えないことを知りました。
+> Committing locally with an unregistered email address will keep your work off the
+> contribution graph (no green squares / grass).
+
 <details><summary>リポジトリの雑草除去作業メモ / Removing grass from a Markdown-only repo</summary>
 
  学習ログを日々 md で更新するだけで GitHub の草（contribution graph）が増えるのが嫌なので、
  ブランチを変えるなど試したがうまくいかなかった。
  過去に生えた草も消して、リポジトリを main 一本に統一した作業記録。
-
-> [!TIP] 解決策
-> ローカルからGithub未登録メールアドレスの user でコミットすると草は生えないことを知りました。
-
----
 
 ### 0. 前提
 
@@ -139,12 +140,6 @@ author が `studylog@local.invalid` になっていれば、そのコミット�
  every day. I tried things like switching branches, but they didn't work out.
  This is a record of erasing the grass that had already grown and consolidating the
  repo onto a single `main` branch.
-
-> [!TIP] Solution
-> Committing locally with an unregistered email address will keep your work off the
-> contribution graph (no green squares / grass).
-
----
 
 ### 0. Prerequisite
 
@@ -275,47 +270,82 @@ Sent from AppSheet.
 </details>
 
 ##### 📅 ~2026/07/27
+
+<details><summary>develop</summary>
+
 - spring-boot slackbotをAIで学習開発
     - [RoomBooking_slack_bot](https://github.com/wedsiamang/RoomBooking_slack_bot/tree/main)
         -  Slack WF Builder からのフォーム送信データをspring-bootでh2dbのデータと照合し、ルールに添い判定結果をスレッドに返信する申請系bot
 
+</details>
+
 ##### 📅 2026/07/14
+
+<details><summary>FE_A_B</summary>
+
 - FE_演習
     - | FE旧午後 H29秋問1(セキュリティ) |  40% | 30分 
     - | trace | R7年　問5 | 理論度数 | 30分 
     - | FE_A | 大原問題集 | ストラテジ |  15問 40%  
 
+</details>
+
 ##### 📅 2026/07/13
+
+<details><summary>FE_A_B</summary>
+
 - FE_演習
     - | FE旧午後 H30春問1(セキュリティ) |  80% | 30分 
     - | trace | サンプル2　問5 | 文字の連接確率(バイグラム) | 40分 
     - | FE_A | 大原問題集 | マネジメント |  50問 74%  
 
+</details>
+
 ##### 📅 2026/07/09  
+
+<details><summary>FE_A_B</summary>
+
 - FE_演習
     - | FE旧午後 R1秋問1(セキュリティ) |  75% | 20分 
     - | trace | サンプル　問6 | ビット列の反転 | 70分 
     - | FE_A | 過去問道場 |  10問  
 
+</details>
+
 ##### 📅 2026/07/08  
+
+<detaisl><summary>FE_A_B</summary>
+
 - FE_演習
     - | FE旧午後 H28春問1(セキュリティ) |  60% | 30分 
     - | trace | 令和5年　問1 | 素数列挙 | 90分 
     - | FE_A | 過去問道場 |  20問  
 
+</details>
+
 ##### 📅 2026/07/07  
+
+<details><summary>FE_A_B</summary>
+
 - FE_演習
     - | FE旧午後 H21春問4(セキュリティ) |  50% | 30分 
     - | trace | 令和6年　問2 | 2進数文字列から10進数への変換 | 25分 
     - | FE_A | 過去問道場 |  50問  
 
+</details>
+
 ##### 📅 2026/07/06  
+
+<details><summary>FE_A_B</summary>
+
 - FE_演習
     - | FE旧午後 H26秋問1(セキュリティ) | 5/5 (100%) | 50分 
     - | trace | 令和6年　問3 | 隣接行列 | 20分 
     - | FE_A | 過去問道場 |  50問  
-      
-### 📅 2026/03/10  
+
+</details>
+
+##### 📅 2026/03/10  
 📗　基本情報テキスト：パーフェクトラーニング技術評論社08  
 ✏️　解いた問題数：20問  
 🔢　対策問題②_B  
