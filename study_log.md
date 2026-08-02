@@ -1,6 +1,175 @@
 #### study_log
 ----
 
+##### 📅 2026/08/02 
+
+<details><summary>リポジトリの雑草除去作業メモ</summary>
+
+> 学習ログを日々 md で更新するだけで GitHub の草（contribution graph）が増えるのが嫌なので、
+> ブランチを変えるなど試したが、
+> かつ過去に生えた草も消して、リポジトリを main 一本に統一した作業記録。
+>
+> A record of the actual steps taken to stop a daily Markdown study-log repo from
+> filling the GitHub contribution graph, erase the grass that was already there,
+> and consolidate everything onto a single `main` branch.
+
+> [!TIP]
+> 解決策：ローカルから未登録メールアドレスuserでコミットすると草は生えないことを知りました。
+
+> [!TIP]
+> Solution: Committing locally with an unregistered email address (user) will not show your contribution graph (green squares/grass).
+
+---
+
+## 0. 前提 / Prerequisite
+
+すでにローカルに clone 済みであること。無ければ clone する。
+The repo is already cloned locally. If not, clone it first.
+
+```bash
+git clone https://github.com/wedsiamang/study_log.git
+cd study_log
+```
+
+---
+
+## 1. このリポジトリだけ未登録メールに設定 / Set an unregistered email (repo-local only)
+
+```bash
+git config user.email "studylog@local.invalid"
+git config user.name  "studylog"
+git config user.email   # => studylog@local.invalid を確認 / verify
+```
+
+`--global` は付けない。付けると草を残したい他リポジトリまで無効化される。
+リポジトリローカル設定は `.git/config` に保存され、このリポジトリ内でのみ有効。
+
+Do **not** use `--global`, or you'll also kill the grass on repos you *want* green.
+Repo-local config is saved in `.git/config` and applies only inside this repo.
+
+`.invalid` は実在しないよう予約された TLD なので、登録済みメールと衝突する事故が起きない。
+`.invalid` is a reserved, never-real TLD, so it can never collide with a registered address.
+
+---
+
+## 2. （一度きり）散らばったブランチを main に統一 / One-time: consolidate stray branches into main
+
+ブランチにしか無いデータが無いか確認する。
+Check whether any data exists *only* on a side branch.
+
+```bash
+git fetch --all --prune
+git branch -a
+git log --oneline main..origin/studyLogs   # main に無い＝救出候補 / candidates to recover
+```
+
+ブランチにしか無いファイルを main へ取り込む（今回は trace.md が1件多かった）。
+Pull the branch-only file into main (here `trace.md` had one extra entry).
+
+```bash
+git checkout origin/studyLogs -- trace.md   # "--" の後にスペース。file だけ差し替え
+git add trace.md
+git commit -m "recover: merge trace into main"
+git show main:trace.md | grep -c '<summary>'   # 件数が揃ったか確認 / confirm count
+```
+
+---
+
+## 3. 履歴を書き換える前にバックアップ / Back up before rewriting history
+
+```bash
+cd ~
+cp -r study_log study_log_backup_20260802
+cd ~/study_log
+```
+
+`cp -r` = copy recursively（フォルダごと複製）。`cd` と打ち間違えないこと。
+`cp -r` copies the folder recursively. Don't type `cd` by mistake.
+
+---
+
+## 4. 過去の草を消す：全履歴のメールを書き換え / Erase past grass: rewrite all commit emails
+
+```bash
+brew install git-filter-repo   # 未インストールなら / if not installed
+
+git filter-repo --email-callback 'return b"studylog@local.invalid"'
+```
+
+全コミットの author/committer メールが未登録アドレスに置き換わり、集計から外れる。
+**必ず1行で、開き `'` と閉じ `'` をペアで**打つ（閉じ忘れると `quote>` で待ち状態になる）。
+コールバックに**登録メールを入れない**こと。入れると逆に全部が自分の草に塗り替わる。
+
+Every commit's author/committer email is replaced with the unregistered one, dropping it
+from the graph. Type it **on one line with matching quotes** (a missing closing `'` leaves
+you stuck at `quote>`). **Never** put a *registered* email in the callback, or you'd repaint
+the entire history as your own grass.
+
+---
+
+## 5. remote を付け直して force-push / Re-add remote and force-push
+
+filter-repo は安全のため origin を外す。付け直してから main を上書きする。
+filter-repo removes `origin` for safety. Re-add it, then overwrite `main`.
+
+```bash
+git remote -v
+git remote add origin https://github.com/wedsiamang/study_log.git   # origin が消えていたら
+git push origin main --force
+```
+
+force-push は取り消せない上書き。他端末に clone があれば、それは clone し直しになる。
+反映（草が消える）は最大24時間。
+
+Force-push is an irreversible overwrite. Any other clone must be re-cloned.
+The graph can take up to 24 hours to update.
+
+---
+
+## 6. 不要ブランチを削除 / Delete unused branches
+
+```bash
+git push origin --delete studyLogs
+git push origin --delete test
+```
+
+---
+
+## 7. 今後の更新フロー / Daily workflow from now on
+
+Web エディタは使わず、ローカルで編集 → commit → push。
+Stop using the web editor. Edit locally, then commit and push.
+
+```bash
+code .                              # VS Code で開く / open in VS Code
+# study_log.md / trace.md を編集して保存 (Cmd+S) / edit & save
+git add study_log.md trace.md
+git commit -m "log: 2026/08/02"
+git push
+git log -1 --format='%an <%ae>'     # studylog <studylog@local.invalid> を確認
+```
+
+author が `studylog@local.invalid` になっていれば、そのコミットは草に載らない。
+If the author shows `studylog@local.invalid`, that commit won't appear on your graph.
+
+---
+
+## メモ / Notes
+
+- progress.md を自動更新する Actions は bot（actions-user）名義なので、元々あなたの草には無関係。そのまま動かしてよい。
+  The Action that updates `progress.md` commits as a bot (`actions-user`), so it never counted toward your grass. Leave it running.
+- 「今後だけ草を止めたい／過去の緑は残したい」場合は、手順4〜5（filter-repo と force-push）を省略し、手順1と7だけ行う。
+  To stop future grass but keep past green, skip steps 4–5 and do only steps 1 and 7.
+
+## 参考 / References
+
+- GitHub Docs — *Profile contributions reference* / *Troubleshooting missing contributions*（草の判定条件：default ブランチ＋メール紐づけ）
+- GitHub Docs — *Viewing a project's contributors*（非デフォルトブランチ・未紐づけメールは集計外）
+- RFC 2606（`.invalid` は予約 TLD で実在しない）
+- `git filter-repo` 公式ドキュメント（履歴書き換え）
+
+</details>
+
 ##### 📅 2026/08/01.   
 📗　基本情報テキスト：パーフェクトラーニング技術評論社06.    
 ✏️　解いた問題数：20問.    
