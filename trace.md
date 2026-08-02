@@ -483,3 +483,128 @@
 
   
 </details>
+
+<details><summary>疎行列</summary>
+
+| # | トレース | 判定 | matrix | i | j | sparseMatrix | matrix[i,j] |
+|---|---|---|---|---|---|---|---|
+| 1 | ○int[] transformSparseMatrix(int[][]matrix) |   | {{3,0,0,0,0},{0,2,2,0,0},{0,0,0,1,3},{0,0,0,2,0},{0,0,0,0,1}} |   |   |   |   |
+| 2 | int i,j |   |   |   |   |   |   |
+| 3 | int[] sparseMatrix |   |   |   |   |   |   |
+| 4 | sparseMatrix←{{},{},{}} |   |   |   |   |   |   |
+| 5 | for(iを1からmatrixの行数まで++) | true |   | 1 |   |   |   |
+| 6 | for(jを1からmatrixの列数まで++) | true |   |   | 1 |   |   |
+| 7 | if(matrix[i,j]!=0) | true |   |   |   |   | 3 |
+| 8 | sparseMatrix[1]の末尾にiの値を追加 |   |   |   |   | {{1},{},{}} |   |
+| 9 | sparseMatrix[2]の末尾にjの値を追加 |   |   |   |   | {{1},{1},{}} |   |
+| 10 | sparseMatrix[3]の末尾にmatrix[i,j]の値を追加 |   |   |   |   | {{1},{1},{3}} |   |
+| 11 | endif |   |   |   |   |   |   |
+| 12 | for(jを1からmatrixの列数まで++) | true |   |   | 2 |   |   |
+| 13 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 14 | endif |   |   |   |   |   |   |
+| 15 | for(jを1からmatrixの列数まで++) | true |   |   | 3 |   |   |
+| 16 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 17 | endif |   |   |   |   |   |   |
+| 18 | for(jを1からmatrixの列数まで++) | true |   |   | 4 |   |   |
+| 19 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 20 | endif |   |   |   |   |   |   |
+| 21 | for(jを1からmatrixの列数まで++) | true |   |   | 5 |   |   |
+| 22 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 23 | endif |   |   |   |   |   |   |
+| 24 | for(jを1からmatrixの列数まで++) | false |   |   | 6 |   |   |
+| 25 | endfor |   |   |   |   |   |   |
+| 26 | for(iを1からmatrixの行数まで++) | true |   | 2 |   |   |   |
+| 27 | for(jを1からmatrixの列数まで++) | true |   |   | 1 |   |   |
+| 28 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 29 | endif |   |   |   |   |   |   |
+| 30 | for(jを1からmatrixの列数まで++) | true |   |   | 2 |   |   |
+| 31 | if(matrix[i,j]!=0) | true |   |   |   |   | 2 |
+| 32 | sparseMatrix[1]の末尾にiの値を追加 |   |   |   |   | {{1,2,},{1},{3}} |   |
+| 33 | sparseMatrix[2]の末尾にjの値を追加 |   |   |   |   | {{1,2,},{1,2,},{3}} |   |
+| 34 | sparseMatrix[3]の末尾にmatrix[i,j]の値を追加 |   |   |   |   | {{1,2,},{1,2,},{3,2}} |   |
+| 35 | endif |   |   |   |   |   |   |
+| 36 | for(jを1からmatrixの列数まで++) | true |   |   | 3 |   |   |
+| 37 | if(matrix[i,j]!=0) | true |   |   |   |   | 2 |
+| 38 | sparseMatrix[1]の末尾にiの値を追加 |   |   |   |   | {{1,2,2},{1,2,},{3,2}} |   |
+| 39 | sparseMatrix[2]の末尾にjの値を追加 |   |   |   |   | {{1,2,2},{1,2,3},{3,2}} |   |
+| 40 | sparseMatrix[3]の末尾にmatrix[i,j]の値を追加 |   |   |   |   | {{1,2,2},{1,2,3},{3,2,2}} |   |
+| 41 | endif |   |   |   |   |   |   |
+| 42 | for(jを1からmatrixの列数まで++) | true |   |   | 4 |   |   |
+| 43 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 44 | endif |   |   |   |   |   |   |
+| 45 | for(jを1からmatrixの列数まで++) | true |   |   | 5 |   |   |
+| 46 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 47 | endif |   |   |   |   |   |   |
+| 48 | for(jを1からmatrixの列数まで++) | false |   |   | 6 |   |   |
+| 49 | endfor |   |   |   |   |   |   |
+| 50 | for(iを1からmatrixの行数まで++) | true |   | 3 |   |   |   |
+| 51 | for(jを1からmatrixの列数まで++) | true |   |   | 1 |   |   |
+| 52 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 53 | endif |   |   |   |   |   |   |
+| 54 | for(jを1からmatrixの列数まで++) | true |   |   | 2 |   |   |
+| 55 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 56 | endif |   |   |   |   |   |   |
+| 57 | for(jを1からmatrixの列数まで++) | true |   |   | 3 |   |   |
+| 58 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 59 | endif |   |   |   |   |   |   |
+| 60 | for(jを1からmatrixの列数まで++) | true |   |   | 4 |   |   |
+| 61 | if(matrix[i,j]!=0) | true |   |   |   |   | 1 |
+| 62 | sparseMatrix[1]の末尾にiの値を追加 |   |   |   |   | {{1,2,2,3},{1,2,3},{3,2,2}} |   |
+| 63 | sparseMatrix[2]の末尾にjの値を追加 |   |   |   |   | {{1,2,2,3},{1,2,3,4},{3,2,2}} |   |
+| 64 | sparseMatrix[3]の末尾にmatrix[i,j]の値を追加 |   |   |   |   | {{1,2,2,3},{1,2,3,4},{3,2,2,1}} |   |
+| 65 | endif |   |   |   |   |   |   |
+| 66 | for(jを1からmatrixの列数まで++) | true |   |   | 5 |   |   |
+| 67 | if(matrix[i,j]!=0) | true |   |   |   |   | 3 |
+| 68 | sparseMatrix[1]の末尾にiの値を追加 |   |   |   |   | {{1,2,2,3,3},{1,2,3,4},{3,2,2,1}} |   |
+| 69 | sparseMatrix[2]の末尾にjの値を追加 |   |   |   |   | {{1,2,2,3,3},{1,2,3,4,5},{3,2,2,1}} |   |
+| 70 | sparseMatrix[3]の末尾にmatrix[i,j]の値を追加 |   |   |   |   | {{1,2,2,3,3},{1,2,3,4,5},{3,2,2,1,3}} |   |
+| 71 | endif |   |   |   |   |   |   |
+| 72 | for(jを1からmatrixの列数まで++) | false |   |   | 6 |   |   |
+| 73 | endfor |   |   |   |   |   |   |
+| 74 | for(iを1からmatrixの行数まで++) | true |   | 4 |   |   |   |
+| 75 | for(jを1からmatrixの列数まで++) | true |   |   | 1 |   |   |
+| 76 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 77 | endif |   |   |   |   |   |   |
+| 78 | for(jを1からmatrixの列数まで++) | true |   |   | 2 |   |   |
+| 79 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 80 | endif |   |   |   |   |   |   |
+| 81 | for(jを1からmatrixの列数まで++) | true |   |   | 3 |   |   |
+| 82 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 83 | endif |   |   |   |   |   |   |
+| 84 | for(jを1からmatrixの列数まで++) | true |   |   | 4 |   |   |
+| 85 | if(matrix[i,j]!=0) | true |   |   |   |   | 2 |
+| 86 | sparseMatrix[1]の末尾にiの値を追加 |   |   |   |   | {{1,2,2,3,3,4},{1,2,3,4,5},{3,2,2,1,3}} |   |
+| 87 | sparseMatrix[2]の末尾にjの値を追加 |   |   |   |   | {{1,2,2,3,3,4},{1,2,3,4,5,4},{3,2,2,1,3}} |   |
+| 88 | sparseMatrix[3]の末尾にmatrix[i,j]の値を追加 |   |   |   |   | {{1,2,2,3,3,4},{1,2,3,4,5,4},{3,2,2,1,3,2}} |   |
+| 89 | endif |   |   |   |   |   |   |
+| 90 | for(jを1からmatrixの列数まで++) | true |   |   | 5 |   |   |
+| 91 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 92 | endif |   |   |   |   |   |   |
+| 93 | for(jを1からmatrixの列数まで++) | false |   |   | 6 |   |   |
+| 94 | endfor |   |   |   |   |   |   |
+| 95 | for(iを1からmatrixの行数まで++) | true |   | 5 |   |   |   |
+| 96 | for(jを1からmatrixの列数まで++) | true |   |   | 1 |   |   |
+| 97 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 98 | endif |   |   |   |   |   |   |
+| 99 | for(jを1からmatrixの列数まで++) | true |   |   | 2 |   |   |
+| 100 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 101 | endif |   |   |   |   |   |   |
+| 102 | for(jを1からmatrixの列数まで++) | true |   |   | 3 |   |   |
+| 103 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 104 | endif |   |   |   |   |   |   |
+| 105 | for(jを1からmatrixの列数まで++) | true |   |   | 4 |   |   |
+| 106 | if(matrix[i,j]!=0) | false |   |   |   |   | 0 |
+| 107 | endif |   |   |   |   |   |   |
+| 108 | for(jを1からmatrixの列数まで++) | true |   |   | 5 |   |   |
+| 109 | if(matrix[i,j]!=0) | true |   |   |   |   | 1 |
+| 110 | sparseMatrix[1]の末尾にiの値を追加 |   |   |   |   | {{1,2,2,3,3,4,5},{1,2,3,4,5,4},{3,2,2,1,3,2}} |   |
+| 111 | sparseMatrix[2]の末尾にjの値を追加 |   |   |   |   | {{1,2,2,3,3,4,5},{1,2,3,4,5,4,5},{3,2,2,1,3,2}} |   |
+| 112 | sparseMatrix[3]の末尾にmatrix[i,j]の値を追加 |   |   |   |   | {{1,2,2,3,3,4,5},{1,2,3,4,5,4,5},{3,2,2,1,3,2,1}} |   |
+| 113 | endif |   |   |   |   |   |   |
+| 114 | for(jを1からmatrixの列数まで++) | false |   |   | 6 |   |   |
+| 115 | endfor |   |   |   |   |   |   |
+| 116 | for(iを1からmatrixの行数まで++) | false |   |   | 6 |   |   |
+| 117 | endfor |   |   |   |   |   |   |
+| 118 | return sparseMatrix |   |   |   |   | {{1,2,2,3,3,4,5},{1,2,3,4,5,4,5},{3,2,2,1,3,2,1}} |   |
+  
+</details>
