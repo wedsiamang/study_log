@@ -14,8 +14,8 @@
 </details>
 
 > [!TIP]
-> **contribution graph**
-> ローカルからGithub未登録メールアドレスの user でコミットすると草は生えないことを知りました。
+> **About Contribution graph**.  
+> ローカルからGithub未登録メールアドレスの user でコミットするとそのリポジトリには草が生えないことを知りました。  
 > Committing locally with an unregistered email address will keep your work off the
 > contribution graph (no green squares / grass).
 
@@ -314,7 +314,7 @@ Sent from AppSheet.
 
 ##### 📅 2026/07/08  
 
-<detaisl><summary>FE_A_B</summary>
+<detais><summary>FE_A_B</summary>
 
 - FE_演習
     - | FE旧午後 H28春問1(セキュリティ) |  60% | 30分 
