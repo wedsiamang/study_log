@@ -15,7 +15,7 @@ jobs:
         with:
           ref: study-log
 
-      - name: render and append
+      - name: render and insert
         env:
           TEXT: "${{ github.event.client_payload.log.text }}"
           SOLVED: "${{ github.event.client_payload.log.solved }}"
@@ -29,36 +29,23 @@ jobs:
           WRONG_CAT: "${{ github.event.client_payload.log.wrong_cat }}"
           WRONG_NO: "${{ github.event.client_payload.log.wrong_no }}"
         run: |
-          python3 - <<'PY'
-          import os, pathlib, datetime, zoneinfo
-          date = datetime.datetime.now(zoneinfo.ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d")
-          tpl = pathlib.Path("templates/study_log_entry.md").read_text(encoding="utf-8")
-          mapping = {
-              "date": date,
-              "text": os.environ.get("TEXT", ""),
-              "solved": os.environ.get("SOLVED", ""),
-              "chapter": os.environ.get("CHAPTER", ""),
-              "category": os.environ.get("CATEGORY", ""),
-              "time_total": os.environ.get("TIME_TOTAL", ""),
-              "rate": os.environ.get("RATE", ""),
-              "longest_cat": os.environ.get("LONGEST_CAT", ""),
-              "longest_no": os.environ.get("LONGEST_NO", ""),
-              "longest_time": os.environ.get("LONGEST_TIME", ""),
-              "wrong_cat": os.environ.get("WRONG_CAT", ""),
-              "wrong_no": os.environ.get("WRONG_NO", ""),
-          }
-          for k, v in mapping.items():
-              tpl = tpl.replace("{{" + k + "}}", str(v))
-          out = pathlib.Path(f"logs/{date[:7]}.md")
-          out.parent.mkdir(parents=True, exist_ok=True)
-          with out.open("a", encoding="utf-8") as f:
-              f.write(tpl + "\n")
-          PY
+          BODY=$(cat <<TXT
+          📗 基本情報テキスト：${TEXT}  
+          ✏️ 解いた問題数：${SOLVED}問  
+          🔢 ${CHAPTER}  
+          🎨 カテゴリー：${CATEGORY}  
+          🕰️ 解答時間合計：${TIME_TOTAL}  
+          ⭕️ 正答率：${RATE}%  
+          ⚠️ 最長解答問題：【${LONGEST_CAT}】No.${LONGEST_NO} ／ ${LONGEST_TIME}  
+          ❌ 間違えた問題：【${WRONG_CAT}】No.${WRONG_NO}
+          TXT
+          )
+          echo "$BODY" | python3 scripts/add_entry.py --label FE_B
 
       - name: commit and push
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add logs/
+          git add study_log.md
           git commit -m "study log: $(TZ=Asia/Tokyo date +%F)" || { echo "no changes"; exit 0; }
           git push origin HEAD:study-log
