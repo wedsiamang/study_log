@@ -17,6 +17,7 @@ jobs:
         env:
           TEXT: "${{ github.event.client_payload.log.text }}"
           SOLVED: "${{ github.event.client_payload.log.solved }}"
+          CORRECT: "${{ github.event.client_payload.log.correct }}"
           CHAPTER: "${{ github.event.client_payload.log.chapter }}"
           CATEGORY: "${{ github.event.client_payload.log.category }}"
           TIME_TOTAL: "${{ github.event.client_payload.log.time_total }}"
@@ -27,18 +28,7 @@ jobs:
           WRONG_CAT: "${{ github.event.client_payload.log.wrong_cat }}"
           WRONG_NO: "${{ github.event.client_payload.log.wrong_no }}"
         run: |
-          BODY=$(cat <<TXT
-          📗 基本情報テキスト：${TEXT}  
-          ✏️ 解いた問題数：${SOLVED}問  
-          🔢 ${CHAPTER}  
-          🎨 カテゴリー：${CATEGORY}  
-          🕰️ 解答時間合計：${TIME_TOTAL}  
-          ⭕️ 正答率：${RATE}%  
-          ⚠️ 最長解答問題：【${LONGEST_CAT}】No.${LONGEST_NO} ／ ${LONGEST_TIME}  
-          ❌ 間違えた問題：【${WRONG_CAT}】No.${WRONG_NO}
-          TXT
-          )
-          echo "$BODY" | python3 scripts/add_entry.py --label FE_B
+          python3 scripts/add_entry.py --kind fe_b
 
       - name: commit and push
         run: |
