@@ -1,6 +1,12 @@
 #### study_log (FY26)
 ----
 
+> [!TIP]
+> **About AppSheet × webhook × GitHub Actions**  
+> AppSheet Automation と GitHub Actions を webhook でつなぐと、リポジトリを自動更新できるようになりました。  
+> Connecting AppSheet Automation to GitHub Actions via a webhook lets me update the repo automatically.
+
+
 <details><summary>AppSheetのボタン押すとリポジトリ学習ログを自動更新する / Auto-updating my study log with one button via webhook</summary>
 
 
