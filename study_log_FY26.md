@@ -1,6 +1,340 @@
 #### study_log (FY26)
 ----
 
+<details><summary>AppSheetのボタン押すとリポジトリ学習ログを自動更新する / Auto-updating my study log with one button via webhook</summary>
+
+
+## やりたかったこと
+
+基本情報技術者の勉強記録を参考書毎に AppSheet で時間計測と正答率について管理していました。
+Appsheetで、1日の終わりにボタンを押すと、その日の「解いた問題数・正答率・解答時間・間違えた問題」を集計して、
+GitHub の Markdown に草を生やさず追記できるようにしたい。
+
+- AppSheet
+- GitHub のリポジトリ
+- GitHub Actions
+- PAT（Personal Access Token）
+
+---
+
+### オートメーションの変更
+
+AppSheetで今日はここまでというアクションボタンを押すと、今日の日付で解いた問題が
+ex:アプリオーナーである自分にメール送信され、それをリポジトリmdファイルに手動で追記していた。
+now:webhookでGithubに送り、Actionsでmdファイルを自動更新
+
+Github Actions が起動できるイベントは push / pull_request / schedule などで、
+外部の出来事で起動したいときは **`repository_dispatch`** という仕組みを使う。
+GitHub の API を叩いて Actions を外から起こすためのもの。
+
+> 「AppSheet ボタン押下で GitHub の API を叩く → Actions が起きる」という流れになる。
+
+AppSheet でCall a webhook設定
+
+```
+- HTTP Verb：`POST`
+- URL：`https://api.github.com/repos/<ユーザー名>/<リポジトリ>/dispatches`
+- Headers：
+  - `Authorization`：`Bearer <PAT>`
+  - `Accept`：`application/vnd.github+json`
+- Body（JSON）：`event_type` と `client_payload` を入れる
+```
+
+Json-body例(テキストごとにbotを作ってテンプレートも書き換えるということを今はやっているが)
+```
+{
+  "event_type": "study-log-entry",
+  "client_payload": {
+    "log": {
+"correct": "<<COUNT(SELECT(パーフェクトラーニング技術評論社06[id],AND([1st_date]=today(),[1st_lap]=true)))>>",
+      "text": "パーフェクトラーニング技術評論社06",
+      "solved": "<<COUNT(SELECT(パーフェクトラーニング技術評論社06[id],AND([1st_date]=today(),ISNOTBLANK([1st_lap]))))>>",
+      "chapter": "<<SELECT(パーフェクトラーニング技術評論社06[chapter],[1st_date]=today(),true)>>",
+      "category": "<<SELECT(パーフェクトラーニング技術評論社06[category],[1st_date]=today(),true)>>",
+      "time_total": "<<SUM(SELECT(パーフェクトラーニング技術評論社06[1st_chapter_time],[1st_date]=today()))>>",
+      "rate": "<<IF(COUNT(SELECT(パーフェクトラーニング技術評論社06[id],AND([1st_date]=today(),ISNOTBLANK([1st_lap]))))=0,\"—\",TEXT(COUNT(SELECT(パーフェクトラーニング技術評論社06[id],AND([1st_date]=today(),[1st_lap]=true))) / DECIMAL(COUNT(SELECT(パーフェクトラーニング技術評論社06[id],AND([1st_date]=today(),ISNOTBLANK([1st_lap]))))) * 100))>>",
+      "longest_cat": "<<SELECT(パーフェクトラーニング技術評論社06[category],AND([1st_chapter_time]=MAX(SELECT(パーフェクトラーニング技術評論社06[1st_chapter_time],[1st_date]=today())),[1st_date]=today()))>>",
+      "longest_no": "<<SELECT(パーフェクトラーニング技術評論社06[no.],AND([1st_chapter_time]=MAX(SELECT(パーフェクトラーニング技術評論社06[1st_chapter_time],[1st_date]=today())),[1st_date]=today()))>>",
+      "longest_time": "<<MAX(SELECT(パーフェクトラーニング技術評論社06[1st_chapter_time],[1st_date]=today()))>>",
+      "wrong_cat": "<<SELECT(パーフェクトラーニング技術評論社06[category],AND([1st_lap]=false,[1st_date]=today()),true)>>",
+      "wrong_no": "<<SELECT(パーフェクトラーニング技術評論社06[no.],AND([1st_lap]=false,[1st_date]=today()))>>"
+    }
+  }
+}
+```
+> **AppSheetあるある**
+> Header の値をそのまま書くと、AppSheet が `application/vnd.github+json` の `/` を「割り算」と解釈してエラーになる。
+> AppSheet の設定欄は式として評価されるので、**固定文字列はダブルクォートで囲む**必要があった。
+> `"application/vnd.github+json"` のように。
+
+---
+
+## 送るデータの組み立て
+
+AppSheet は数値や文字を項目ごとにデータを送るだけ、
+見た目（表やレイアウト）の組み立ては GitHub Actions 側の Python 
+デザインのテンプレがリポジトリに残る
+0除算は AppSheet 側で `IF(分母=0, "—", 割り算)` とガードした。
+
+---
+
+## 本体：GitHub Actions のワークフロー
+
+`repository_dispatch` を受けて、Python でファイルを更新する。
+
+```yaml
+name: study-log-append
+
+on:
+  repository_dispatch:
+    types: [study-log-entry]
+
+permissions:
+  contents: write
+
+jobs:
+  append:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: build and append
+        run: |
+          python3 scripts/add_entry.py --kind fe_b
+      - name: commit and push
+        run: |
+          git add -A
+          git commit -m "study log" || { echo "no changes"; exit 0; }
+          git push origin HEAD:main
+```
+
+> `repository_dispatch` で起動するワークフローは、**YAML がデフォルトブランチ（main）に無いと発火しない**。
+> あと dispatch が成功すると返ってくるのは **204 No Content**（本文が空）。
+> 「反応が無い＝失敗？」と一瞬焦ったが、空が正解だった。
+> なお草については別記事で書いたが、コミットの author を bot にしておけば増えない。
+
+---
+
+## `runs-on` と `uses` って何
+
+ワークフロー**呪文の2行の意味**
+`runs-on: ubuntu-latest` と `uses: actions/checkout@v4`。
+
+### `runs-on`：ジョブを「どのマシンで動かすか」
+
+`runs-on` は、そのジョブをどの実行環境（ランナー）で走らせるか
+
+`ubuntu-latest` は、**GitHub が用意してくれる使い捨ての Linux 仮想マシン**を使う、という意味。
+GitHub 側が管理してくれる（マネージドな）環境で、ジョブが終わると消える。
+毎回まっさらな Ubuntu が立ち上がって、そこで自分の処理が動くイメージ。
+
+大事だったのは、**Ubuntu になるのは自動じゃなくて、自分でそう書いたから**という点。
+
+- `windows-latest` と書けば Windows で動く
+- `macos-latest` なら Mac
+- 自分のサーバーで動かす **self-hosted runner** も指定できる
+
+> つまり「なぜ ubuntu なのか」の答えは「YAML にそう書いたから」だった。
+> マネージドの Linux を使うか、Windows/Mac を使うか、自前マシンを使うか、を選ぶ場所。
+> 「latest」は最新の用意された Ubuntu バージョンを使う、の意味。
+
+### `uses`：他人が作った部品（アクション）を呼ぶ
+
+`uses: actions/checkout@v4` の方は、**既製の部品を呼び出す命令**だった。
+
+Actions では、よく使う処理が「アクション」という再利用可能な部品として公開されている。
+`uses` はそれを「使う」宣言。
+
+`actions/checkout@v4` を分解する
+
+- `actions/checkout` … リポジトリのコードをランナーに持ってくる公式アクション
+- `@v4` … そのバージョン（タグ）
+
+このアクションが無いと、まっさらな Ubuntu にはリポジトリのファイルが無いので、
+`python3 scripts/add_entry.py` を実行しようとしてもスクリプトが見つからない。
+**「マシンを用意（runs-on）→ コードを持ってくる（uses: checkout）→ 自分の処理を走らせる（run）」**
+という順番と分かり腑に落ちた。
+
+> `@v4` のバージョン指定も大事で、
+> `@main` みたいに動くブランチを指すと、その先が更新されると挙動が変わるらしい。
+> 多くの人が固定タグ（`@v4`）で参照しているらしい。
+
+---
+
+## 全体の流れ
+
+```
+AppSheet のアクションボタンで発火
+   │  Call a webhook（POST）
+   ▼
+GitHub API  /repos/…/dispatches   ← 認証は PAT（ここで 401/403/404 の世界）
+   │  repository_dispatch イベント
+   ▼
+GitHub Actions（main の YAML が受ける）
+   │  runs-on: ubuntu-latest でマシンを用意
+   │  uses: checkout でコードを取得
+   │  Python で Markdown を組み立てて追記
+   ▼
+bot 名義でコミット & push
+```
+
+---
+
+## つまずきメモ（自分用）
+
+- **401 Bad credentials**：PAT が空だった / 二重に貼っていた。`echo "${#PAT}"` で文字数を見ると気づける。fine-grained PAT は `github_pat_` で始まって90文字前後。
+- **Header の `/` がエラー**：AppSheet の Header は式評価される。値をダブルクォートで囲む。
+- **204 が返る**：成功。空レスポンスが正常。
+- **YAML がデフォルトブランチに無いと起動しない**：`repository_dispatch` の仕様。
+- **`runs-on` は環境の選択**：ubuntu は自動じゃなく指定。Windows/Mac/self-hosted も選べる。
+- **`uses` は既製アクションの呼び出し**：`checkout` が無いとコードが手元に来ない。`@v4` はバージョン固定。
+- **push が rejected（non-fast-forward）**：bot が自動 push した後、手元が古くなると起きる。`git pull` してから push すれば解ける。
+- **フォルダを2箇所に clone していた**：同名フォルダが2つあり「直したのに反映されない」を繰り返した。clone は1箇所に。作業前に `pwd` を見る癖。
+
+---
+
+# English version
+
+## What I wanted
+
+I'd been tracking my exam study (time spent and accuracy, per textbook) in AppSheet.
+At the end of the day I press an action button, and I wanted that day's stats
+— questions solved, accuracy, time, and mistakes — appended to a Markdown file on GitHub,
+**without growing grass** (the green squares on my contribution graph).
+
+- AppSheet
+- a GitHub repo
+- GitHub Actions
+- a PAT (Personal Access Token)
+
+---
+
+### Changing the automation
+
+Before, pressing the "done for today" action button in AppSheet emailed that day's solved
+problems to me (the app owner), and I appended them to the repo's md file by hand.
+Now, it sends them to GitHub via a webhook, and Actions updates the md file automatically.
+
+The events that can start GitHub Actions are push / pull_request / schedule, etc.
+To start it from something external, you use **`repository_dispatch`** —
+it hits the GitHub API to wake Actions up from outside.
+
+> So the flow is: "AppSheet button press hits the GitHub API → Actions fires."
+
+AppSheet "Call a webhook" settings:
+
+```
+- HTTP Verb: POST
+- URL: https://api.github.com/repos/<user>/<repo>/dispatches
+- Headers:
+  - Authorization: Bearer <PAT>
+  - Accept: application/vnd.github+json
+- Body (JSON): with event_type and client_payload
+```
+
+(The JSON body is the one shown in the Japanese section above. Right now I make a separate
+bot and rewrite the template per textbook.)
+
+> **A classic AppSheet gotcha.**
+> If you type the header value plainly, AppSheet reads the `/` in `application/vnd.github+json`
+> as division and errors out. The fields are evaluated as expressions, so you must
+> **wrap literal strings in double quotes**: `"application/vnd.github+json"`.
+
+---
+
+## Building the payload
+
+AppSheet just sends the numbers and text field by field;
+the layout (the table) is assembled by Python inside GitHub Actions,
+so the design template lives in the repo.
+For divide-by-zero I guarded it on the AppSheet side with `IF(denominator=0, "—", division)`.
+
+---
+
+## The core: the Actions workflow
+
+It receives `repository_dispatch` and updates the file with Python.
+(The YAML is the one shown in the Japanese section above.)
+
+> A workflow triggered by `repository_dispatch` **won't fire unless the YAML is on the default branch (main)**.
+> Also, a successful dispatch returns **204 No Content** (empty body).
+> "No response = failure?" I panicked for a second, but empty is correct.
+> (I wrote about the grass part elsewhere; making the commit author a bot keeps it from growing.)
+
+---
+
+## What are `runs-on` and `uses`?
+
+The meaning of the **two "spell" lines** in the workflow:
+`runs-on: ubuntu-latest` and `uses: actions/checkout@v4`.
+
+### `runs-on`: which machine the job runs on
+
+`runs-on` picks **which runner (execution environment)** the job runs on.
+
+`ubuntu-latest` means **use a disposable Linux VM that GitHub provides** —
+a managed environment GitHub spins up and throws away when the job ends.
+A fresh Ubuntu boots each time, and my steps run there.
+
+The key point: **it's Ubuntu because I wrote it, not automatically.**
+
+- `windows-latest` runs on Windows
+- `macos-latest` on Mac
+- a **self-hosted runner** lets you use your own server
+
+> So "why Ubuntu?" answers to "because the YAML says so."
+> It's where you choose managed Linux vs Windows/Mac vs your own machine.
+> "latest" means the newest provided Ubuntu version.
+
+### `uses`: calling a ready-made part (an action)
+
+`uses: actions/checkout@v4` **calls a ready-made part**.
+
+In Actions, common tasks are published as reusable "actions." `uses` declares you use one.
+
+- `actions/checkout` … the official action that brings your repo's code onto the runner
+- `@v4` … its version (tag)
+
+Without it, the fresh Ubuntu has none of my files, so `python3 scripts/add_entry.py`
+can't find the script. The order finally clicked:
+**provision a machine (`runs-on`) → fetch the code (`uses: checkout`) → run my steps (`run`)**.
+
+> The `@v4` pin matters too. Pointing at a moving branch like `@main` can change behavior
+> when it updates, so most people reference a fixed tag (`@v4`).
+
+---
+
+## The whole flow
+
+```
+AppSheet action button fires
+   │  Call a webhook (POST)
+   ▼
+GitHub API  /repos/…/dispatches   ← auth is the PAT (the 401/403/404 world)
+   │  repository_dispatch event
+   ▼
+GitHub Actions (the YAML on main receives it)
+   │  runs-on: ubuntu-latest provisions a machine
+   │  uses: checkout fetches the code
+   │  Python builds the Markdown and appends
+   ▼
+commit & push as bot
+```
+
+---
+
+## Trap notes (for future me)
+
+- **401 Bad credentials**: the PAT was empty / pasted twice. `echo "${#PAT}"` reveals it. A fine-grained PAT starts with `github_pat_` and is ~90 chars.
+- **`/` in header errors**: AppSheet headers are evaluated as expressions. Wrap values in double quotes.
+- **204 returned**: success. Empty response is normal.
+- **Won't fire unless YAML is on the default branch**: `repository_dispatch` spec.
+- **`runs-on` is an environment choice**: Ubuntu isn't automatic; you can pick Windows/Mac/self-hosted.
+- **`uses` calls a ready-made action**: without `checkout`, your code isn't on the runner. `@v4` pins the version.
+- **push rejected (non-fast-forward)**: after the bot auto-pushes, your local falls behind. `git pull` then push.
+- **Cloned into two folders**: same-named folder in two places → "I fixed it but nothing changed," repeatedly. Keep one clone. Check `pwd` before working.
+
+</details>
+
 ##### 2026/08/06 · FE 科目B
 
 <details><summary>📕 FE 科目B ・ 6問</summary>
