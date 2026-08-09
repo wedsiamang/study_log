@@ -1,6 +1,20 @@
 #### study_log (FY26)
 ----
 
+##### 2026/08/09
+
+<details><summary>📗FE_A 判定C+</summary>
+
+`█████░░░░░` 55.3%　47/85問 
+
+| 教材 | 過去問道場 |
+|---|---|
+|テクノロジ|44.6%|
+|マネジメント|88.9%|
+|ストラテジ|70.0% |
+
+</details>
+
 > [!TIP]
 > **About AppSheet × webhook × GitHub Actions**  
 > AppSheet Automation と GitHub Actions を webhook でつなぐと、リポジトリを自動更新できるようになりました。  
