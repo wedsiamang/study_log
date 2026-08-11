@@ -100,9 +100,11 @@ def main():
     heading = f"##### {date_str} · FE 科目B" if args.kind == "fe_b" else f"##### {date_str}"
 
     # 同日は既存見出しの下、なければ最上部に新規
-    idx = text.find(f"##### {date_str}")
-    if idx != -1:
-        after = idx
+    import re
+    pat = re.compile(rf"^##### .*{re.escape(date_str)}", re.M)   # 📅 等を挟んでも一致
+    m = pat.search(text)
+    if m:
+        after = m.start()
         next_h = text.find("\n##### ", after + 5)
         insert_at = next_h if next_h != -1 else len(text)
         new_text = text[:insert_at].rstrip() + "\n\n" + details + text[insert_at:]
@@ -110,7 +112,6 @@ def main():
         h = text.find("----")
         pos = text.find("\n", h) + 1 if h != -1 else 0
         new_text = text[:pos] + f"\n{heading}\n\n{details}" + text[pos:]
-
     target.write_text(new_text, encoding="utf-8")
     print(f"added: {args.kind} @ {date_str} -> {target.name}")
 
