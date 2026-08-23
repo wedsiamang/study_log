@@ -15,8 +15,6 @@
 
 </details>
 
-##### 2026/8/23
-
 <details><summary>📗FE_A 判定B-</summary>
 
 `██████░░░░` 63.6%　77/121問 
@@ -29,7 +27,7 @@
 
 </details>
 
-##### 2026/08/16 · FE 科目B
+##### 2026/08/16
 
 <details><summary>📕 FE 科目B ・ 19問</summary>
 
