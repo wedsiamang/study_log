@@ -97,7 +97,7 @@ def main():
 
     text = target.read_text(encoding="utf-8") if target.exists() \
            else HEADER_TMPL.format(fy2=fy2)
-    heading = f"##### {date_str} · FE 科目B" if args.kind == "fe_b" else f"##### {date_str}"
+    heading = f"##### {date_str} " if args.kind == "fe_b" else f"##### {date_str}"
 
     # 同日は既存見出しの下、なければ最上部に新規
     import re
