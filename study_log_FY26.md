@@ -1,7 +1,7 @@
 #### study_log (FY26)
 ----
 
-##### 2026/08/23 · FE 科目B
+##### 2026/08/23
 
 <details><summary>📕 FE 科目B ・ 13問</summary>
 
