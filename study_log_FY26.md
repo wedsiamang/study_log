@@ -1,6 +1,15 @@
 #### study_log (FY26)
 ----
 
+##### 2026/08/31
+
+<details><summary>基本情報技術者受験結果</summary>
+
+- 科目A：685
+- 科目B：625
+
+</details>
+
 ##### 2026/08/30
 
 <details><summary>📗FE_A </summary>
