@@ -1,6 +1,225 @@
 #### study_log (FY26)
 ----
 
+> [!TIP]
+> **About MkDocs × OrbStack Ubuntu（常時起動）**
+> MkDocs で作っている応用情報学習ノートを OrbStack Ubuntu ローカルで動かし、Mac の画面を消してもサーバーを止めず iPhone からいつでも開けるようにしました。 > Running my MkDocs study notes on OrbStack Ubuntu so I can access them from my iPhone anytime, even when my Mac screen is turned off.
+
+<details><summary>MkDocsをOrbStack Ubuntuで常時起動し、iphoneから読む / Always-on MkDocs on OrbStack, read from my phone</summary>
+
+
+## やりたかったこと
+
+- テキスト書き起こしを **Claude で Markdown 整形 → リポジトリに置く**
+- それを **MkDocs でローカル配信**し、綺麗なUI＋全文検索で読み返す
+- **Mac の画面を消してもサーバーは動かし続ける**
+- **iPhone からいつでも**ノートにアクセスできる
+
+---
+
+## なぜこの構成なのか（理由）
+
+- **MkDocs をローカルで動かす**：著作権がある教材は書き起こす場合公開せずローカルで扱う必要がある。加えて、md を保存すると即座に反映される同期が楽しくて学習がはかどる。
+- **書き起こし → Claude で md 化**：疲れている時の脳に低負荷高速回転書き起こしタイピングは、**書く過程そのものが記憶に残る**（自分の経験則）。整形済み md は検索・再読に素晴らしい。
+- **OrbStack の Ubuntu で動かす**：Mac 本体を汚さず、使い捨ての Linux 環境で完結できる。VS Code の Remote-SSH から中のファイルを直接編集できるので、編集と配信が一つのアプリで回る。
+
+---
+
+## 手順
+
+### 1. OrbStack の Ubuntu に MkDocs を入れる
+
+```bash
+sudo apt update && sudo apt install -y python3-pip python3-venv
+python3 -m venv venv
+source venv/bin/activate
+pip install mkdocs
+```
+
+- **なぜこう書いたか**：システムの Python を汚さないよう `venv`（仮想環境）に入れる。`(venv)` がプロンプト先頭に出れば有効化成功。
+- **何をしているか**：apt でビルド用の pip/venv を用意 → 仮想環境を作って有効化 → その中に MkDocs をインストール。
+- **参考**：MkDocs 公式（Installation）。
+
+### 2. 「スリープ禁止つき」でバックグラウンド起動する（これ1本でOK）
+
+```bash
+nohup caffeinate mkdocs serve -a 0.0.0.0:8000 > /dev/null 2>&1 &
+```
+
+3つの役割を1行に詰めている:
+
+- **`mkdocs serve -a 0.0.0.0:8000`（なぜ `0.0.0.0`）**：MkDocs の既定は `127.0.0.1:8000`（ローカルホスト限定）で、これだと Mac 以外から届かない。`0.0.0.0` で全インターフェースに bind すると、OrbStack がその port を **LAN にも露出**する（`machines.expose_ports_to_lan` が既定 ON）。
+- **`caffeinate <コマンド>`（なぜ Ubuntu 内で効くのか）**：`caffeinate` は指定コマンドを子プロセスとして起動し、**そのコマンドが終わるまで Mac をスリープさせない** macOS 標準ツール。OrbStack は macOS コマンドを Linux マシンの PATH に**ブリッジ**しているため、**Ubuntu 内で打っても実際の Mac のスリープ制御に効く**。公式ドキュメントも「マシン内で caffeinate を使って Mac を起こしておける」と明記している。→ mkdocs が生きている間だけ Mac が起きているので、停止すれば抑止も自動解除。
+- **`nohup ... &`**：`&` で裏に回し、`nohup` で**ターミナルを閉じてもプロセスを維持**。`> /dev/null 2>&1` は出力を捨てて静かに走らせるらしい。
+
+> [!NOTE]
+> **「画面オフ」と「システムスリープ」は別物。** OrbStack の Ubuntu は Mac 上の VM なので、**Mac が本スリープすると VM ごと止まる**。`nohup` はターミナル切断には耐えるがスリープは防げない。上の `caffeinate` が「画面は消えてもシステムは起こしておく」を担当する。
+>
+> ただし MacBook で**蓋を閉じる（クラムシェル）**と、電源接続でも強制スリープする。蓋を閉じて運用したいなら、電源＋外部ディスプレイ（or 入力デバイス）を挿すか、`Amphetamine` などのアプリが要る。
+
+### 3. 本当に動いているか確認する
+
+`> /dev/null` で出力を捨てているので、`[1] 5451` の表示だけでは「起動を試みた」までしか分からない。実配信とスリープ抑止を確定させる:
+
+```bash
+# Ubuntu内：プロセス生存 & 200 OK が返るか
+pgrep -f "mkdocs serve"
+curl -sI localhost:8000
+
+# Mac側：スリープ抑止アサーションが立っているか
+pmset -g assertions | grep -i sleep
+# → PreventUserIdleSystemSleep … 1 なら caffeinate が効いている
+```
+
+止めたいときは `pkill -f "mkdocs serve"`（caffeinate の抑止も自動で外れる）。
+
+### 4. iPhone からアクセスする
+
+iPhone のブラウザで **`http://<ホスト名>.local:8000`** を開く（この形で動作確認済み）。
+
+- **なぜ `.local` で届くのか**：`.local` は Bonjour/mDNS の名前で、**同じ LAN 上の iPhone が自力で名前解決できる**。MkDocs を `0.0.0.0` で起動 → OrbStack が port を LAN に露出しているので、その `<ホスト名>.local:8000` に届く。
+- **IP でなく名前を使う利点**：DHCP で IP が変わっても `.local` 名なら追従する。IP を直接使うなら Mac 側 `ipconfig getifaddr en0` で確認できる。
+- **ホスト名が分からないとき**：Mac 側 `scutil --get LocalHostName` の返り値に `.local` を付ける。
+
+> [!IMPORTANT]
+> **`.local`（Bonjour）と `.orb.local`（OrbStack）は別物。**
+> スマホから使えるのは Bonjour の **`<ホスト名>.local`** の方。
+> 一方 `<マシン名>.orb.local` は OrbStack を動かす **Mac 本体でしか解決されず**、iPhone からは応答せずハングする（remote device からは解決不可の既知挙動）。混同しないこと。
+
+---
+
+## 全体の流れ
+
+```
+VS Code (Remote-SSH) ──編集──▶ OrbStack Ubuntu の Markdown（Macの/Users配下を共有）
+                                   │  nohup caffeinate mkdocs serve -a 0.0.0.0:8000 &
+                                   ▼
+              caffeinate が Mac を起こしたまま Ubuntu:8000 で配信
+                                   │  0.0.0.0 + expose_ports_to_lan で LAN に露出
+                                   ▼
+                     Mac は画面オフでもスリープしない（caffeinate 経由）
+                                   │
+                                   ▼
+        iPhone ── http://<ホスト名>.local:8000 (Bonjour) ──▶ 閲覧・全文検索
+```
+
+---
+
+## つまずきメモ（自分用）
+
+- **`.orb.local` と `.local` を混同**：スマホから使うのは Bonjour の `<ホスト名>.local:8000`。`.orb.local` は Mac 本体専用で iPhone からは開けない。
+- **Mac がスリープすると全部止まる**：OrbStack は Mac 上の VM。**画面オフ ≠ スリープ**。`caffeinate` で対応。
+- **`caffeinate` は Ubuntu 内で打ってOK**：OrbStack が macOS コマンドをブリッジしているので、Ubuntu 内の `caffeinate` が実際の Mac のスリープを止める。`caffeinate mkdocs serve ...` のように「起こしておきたいコマンド」を引数に渡すのが定石。
+- **`> /dev/null` にすると失敗が見えない**：`[1] 5451` は起動を試みた表示。`curl -sI localhost:8000` と `pmset -g assertions` で確定確認。
+- **VS Code を `Cmd + Q` で完全終了するとサーバーが落ちることがある**：普段の編集は VS Code、起動プロセスは `nohup` で切り離しておくと安全。
+- **MacBook 蓋閉じで落ちる**：クラムシェルは強制スリープ。電源＋外部ディスプレイ、または `Amphetamine`。
+
+---
+
+## 参考
+
+- OrbStack Docs — Commands（マシン内で `caffeinate` を使い Mac を起こしておける）: https://docs.orbstack.dev/machines/commands
+- OrbStack Docs — Linux networking（`0.0.0.0`/`::` で他デバイスから到達可能、`machines.expose_ports_to_lan`）: https://docs.orbstack.dev/machines/network
+- OrbStack Issue #1893 — `.orb.local` は remote device から解決できない（`.local`/IP を使う）: https://github.com/orbstack/orbstack/issues/1893
+- MkDocs 公式（`mkdocs serve` の `-a` / `--dev-addr`）: https://www.mkdocs.org/
+- macOS `man caffeinate` / `man nohup` / `pmset -g assertions` / `scutil`
+
+</details>
+
+
+---
+
+# English version
+
+> [!TIP]
+> Running my MkDocs study notes on OrbStack Ubuntu so I can access them from my iPhone anytime, even when my Mac screen is turned off.
+
+## What I wanted
+
+- Turn my rough notes into Markdown with Claude and keep them in a repo.
+- Serve them locally with MkDocs for a clean UI and full-text search.
+- Keep the server up **even with the Mac's screen off**.
+- Reach the notes **from my iPhone**, anytime.
+
+## Why this setup
+
+- **MkDocs, locally**: notes derived from a prep-school textbook are copyrighted, so they must stay local, not published. Also, the instant save-to-refresh sync is fun, which keeps me going.
+- **Rough notes → Claude → Markdown**: rough notes are easy to re-read, and the act of writing them sticks in memory (my own experience). Cleaned-up md is great for search and review.
+- **On OrbStack Ubuntu**: a disposable Linux env that doesn't clutter the Mac; VS Code Remote-SSH edits the files inside it directly (the Mac's `/Users/...` is mounted at the same path). Editing and serving in one app.
+
+## Steps
+
+**1. Install MkDocs in the OrbStack Ubuntu machine**
+```bash
+sudo apt update && sudo apt install -y python3-pip python3-venv
+python3 -m venv venv
+source venv/bin/activate
+pip install mkdocs
+```
+Use a `venv` so the system Python stays clean. `(venv)` in the prompt = activated. Ref: MkDocs Installation.
+
+**2. Start it in the background, with sleep-prevention baked in (one line)**
+```bash
+nohup caffeinate mkdocs serve -a 0.0.0.0:8000 > /dev/null 2>&1 &
+```
+- `mkdocs serve -a 0.0.0.0:8000`: MkDocs defaults to `127.0.0.1:8000` (localhost only). Binding `0.0.0.0` makes OrbStack expose the port to the LAN too (`machines.expose_ports_to_lan`, on by default).
+- `caffeinate <command>`: runs the command as a child and keeps the **Mac** awake until it exits. OrbStack **bridges macOS commands into the Linux machine's PATH**, so typing it in Ubuntu still controls the real Mac's sleep — the docs literally say you can run `caffeinate` in a machine to keep the Mac awake. Stop mkdocs and the wakelock releases automatically.
+- `nohup ... &`: survive terminal close, run in background.
+
+> [!NOTE]
+> **Display off ≠ system sleep.** OrbStack's Ubuntu is a VM on the Mac; if the Mac fully sleeps, the VM stops with it. `nohup` survives a terminal close, not sleep — that's what `caffeinate` is for. But a MacBook with the lid closed (clamshell) force-sleeps even on power; you need power + an external display/input, or an app like Amphetamine.
+
+**3. Confirm it's really up**
+```bash
+# In Ubuntu: process alive + HTTP 200?
+pgrep -f "mkdocs serve"
+curl -sI localhost:8000
+
+# On the Mac: is a sleep-prevention assertion held?
+pmset -g assertions | grep -i sleep    # PreventUserIdleSystemSleep ... 1 = caffeinate working
+```
+Stop it with `pkill -f "mkdocs serve"` (the wakelock releases too).
+
+**4. Access from iPhone**
+
+Open **`http://<hostname>.local:8000`** on the phone (this is the form that works for me).
+- **Why `.local` resolves**: `.local` is a Bonjour/mDNS name that an iPhone on the same LAN resolves by itself. With MkDocs on `0.0.0.0` and OrbStack exposing the port to the LAN, `<hostname>.local:8000` reaches it.
+- **Name over IP**: a `.local` name follows the host even when its DHCP IP changes. For a raw IP instead, `ipconfig getifaddr en0` on the Mac. Find the name with `scutil --get LocalHostName` (+ `.local`).
+
+> [!IMPORTANT]
+> **`.local` (Bonjour) and `.orb.local` (OrbStack) are different things.** The phone uses the Bonjour `<hostname>.local`. `<machine>.orb.local` only resolves on the Mac running OrbStack and hangs from remote devices — don't confuse the two.
+
+## The whole flow
+```
+VS Code (Remote-SSH) ──edit──▶ Markdown in OrbStack Ubuntu (Mac's /Users shared)
+                                   │  nohup caffeinate mkdocs serve -a 0.0.0.0:8000 &
+                                   ▼
+            caffeinate keeps the Mac awake while Ubuntu:8000 serves
+                                   │  0.0.0.0 + expose_ports_to_lan → visible on LAN
+                                   ▼
+                    Mac stays awake with the screen off (via caffeinate)
+                                   │
+                                   ▼
+        iPhone ── http://<hostname>.local:8000 (Bonjour) ──▶ read + full-text search
+```
+
+## Trap notes
+- Don't confuse `.orb.local` with `.local` — the phone uses Bonjour `<hostname>.local:8000`; `.orb.local` is Mac-only.
+- Was serving on 127.0.0.1 — must be `-a 0.0.0.0:8000` to reach it from other devices.
+- If the Mac sleeps, everything stops — OrbStack is a VM on the Mac. Screen off ≠ sleep. Use `caffeinate`.
+- `caffeinate` works from inside Ubuntu — OrbStack bridges macOS commands, so `caffeinate` in the machine controls the real Mac. Pass the command you want kept alive as its argument.
+- `> /dev/null` hides failures — `[1] 5451` only means a job was launched. Verify with `curl -sI localhost:8000` and `pmset -g assertions`.
+- `Cmd + Q` on VS Code can kill the server — edit in VS Code, but detach the serving process with `nohup`.
+- MacBook dies when the lid closes — clamshell force-sleeps; use power + external display, or Amphetamine.
+
+## References
+- OrbStack Docs — Commands (run `caffeinate` in a machine to keep the Mac awake): https://docs.orbstack.dev/machines/commands
+- OrbStack Docs — Linux networking: https://docs.orbstack.dev/machines/network
+- OrbStack Issue #1893 (`.orb.local` from remote devices): https://github.com/orbstack/orbstack/issues/1893
+- MkDocs: https://www.mkdocs.org/
+- macOS `man caffeinate` / `man nohup` / `pmset -g assertions` / `scutil`
+
+
 ##### 2026/08/31
 
 <details><summary>基本情報技術者受験結果</summary>
