@@ -2,10 +2,11 @@
 ----
 
 > [!TIP]
-> **About MkDocs × OrbStack Ubuntu（常時起動）**
-> MkDocs で作っている応用情報学習ノートを OrbStack Ubuntu ローカルで動かし、Mac の画面を消してもサーバーを止めず iPhone からいつでも開けるようにしました。 > Running my MkDocs study notes on OrbStack Ubuntu so I can access them from my iPhone anytime, even when my Mac screen is turned off.
+> **About MkDocs × OrbStack Ubuntu**. 
+> MkDocs で作っている応用情報学習ノートを OrbStack Ubuntu ローカルで動かし、Mac の画面を消してもサーバーを止めず iPhone からいつでも開けるようにしました。  
+> Running my MkDocs study notes on OrbStack Ubuntu so I can access them from my iPhone anytime, even when my Mac screen is turned off.
 
-<details><summary>MkDocsをOrbStack Ubuntuで常時起動し、iphoneから読む / Always-on MkDocs on OrbStack, read from my phone</summary>
+<details><summary>MkDocsをOrbStack Ubuntuで常時起動していつでもモバイルで開く / Always-on MkDocs on OrbStack, read from my phone</summary>
 
 
 ## やりたかったこと
@@ -22,6 +23,7 @@
 - **MkDocs をローカルで動かす**：著作権がある教材は書き起こす場合公開せずローカルで扱う必要がある。加えて、md を保存すると即座に反映される同期が楽しくて学習がはかどる。
 - **書き起こし → Claude で md 化**：疲れている時の脳に低負荷高速回転書き起こしタイピングは、**書く過程そのものが記憶に残る**（自分の経験則）。整形済み md は検索・再読に素晴らしい。
 - **OrbStack の Ubuntu で動かす**：Mac 本体を汚さず、使い捨ての Linux 環境で完結できる。VS Code の Remote-SSH から中のファイルを直接編集できるので、編集と配信が一つのアプリで回る。
+- mac にはバッテリー以外ほとんど負荷がかからない。
 
 ---
 
@@ -124,15 +126,7 @@ VS Code (Remote-SSH) ──編集──▶ OrbStack Ubuntu の Markdown（Macの
 - MkDocs 公式（`mkdocs serve` の `-a` / `--dev-addr`）: https://www.mkdocs.org/
 - macOS `man caffeinate` / `man nohup` / `pmset -g assertions` / `scutil`
 
-</details>
-
-
 ---
-
-# English version
-
-> [!TIP]
-> Running my MkDocs study notes on OrbStack Ubuntu so I can access them from my iPhone anytime, even when my Mac screen is turned off.
 
 ## What I wanted
 
@@ -219,6 +213,7 @@ VS Code (Remote-SSH) ──edit──▶ Markdown in OrbStack Ubuntu (Mac's /Use
 - MkDocs: https://www.mkdocs.org/
 - macOS `man caffeinate` / `man nohup` / `pmset -g assertions` / `scutil`
 
+</details>
 
 ##### 2026/08/31
 
