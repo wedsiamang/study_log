@@ -2,7 +2,7 @@
 ----
 
 > [!TIP]
-> **About MkDocs × OrbStack Ubuntu**. 
+> **About MkDocs × OrbStack Ubuntu**.   
 > MkDocs で作っている応用情報学習ノートを OrbStack Ubuntu ローカルで動かし、Mac の画面を消してもサーバーを止めず iPhone からいつでも開けるようにしました。  
 > Running my MkDocs study notes on OrbStack Ubuntu so I can access them from my iPhone anytime, even when my Mac screen is turned off.
 
