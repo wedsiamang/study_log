@@ -26,20 +26,21 @@
 
 <details><summary>📗FE_A:講座テキスト書き起こし 2026/09/22 update</summary>
 
-AP_Bと重複しない項目のみ [ 2 / 6 ]
+AP_Bと重複しない項目のみ [ 3 / 6 ]
 
 | 分野 | 項目 | 状態 | 日付 |
 | --- | --- | --- | --- |
 | テクノロジ | 基礎理論 | done | 9/22 |
 | テクノロジ | コンピュータ構成要素 | done | 9/22 |
-| テクノロジ | ハードウェア|  ||
+| テクノロジ | ハードウェア| done | 9/23 |
 | テクノロジ | ソフトウェア |  ||
 | テクノロジ | ユーザインタフェース |  ||
 | テクノロジ | ソフトウェア開発管理技術 |  ||
 
 </details>
 
-> [!TIP]> **About MkDocs × OrbStack Ubuntu**.   > MkDocs で作っている応用情報学習ノートを OrbStack Ubuntu ローカルで動かし、Mac の画面を消してもサーバーを止めず 同じWi-Fi上 iPhone からいつでも開けるようにしました。  
+> [!TIP]
+> **About MkDocs × OrbStack Ubuntu**.   > MkDocs で作っている応用情報学習ノートを OrbStack Ubuntu ローカルで動かし、Mac の画面を消してもサーバーを止めず 同じWi-Fi上 iPhone からいつでも開けるようにしました。  
 > Running my MkDocs study notes on OrbStack Ubuntu so I can access them from my iPhone anytime, even when my Mac screen is turned off.
 
 <details><summary>MkDocsをOrbStack Ubuntuで常時起動していつでもモバイルで開く / Always-on MkDocs on OrbStack, read from my phone</summary>
